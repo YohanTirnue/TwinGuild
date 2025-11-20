@@ -1,0 +1,189 @@
+bot:
+  name: "TwinGuild Logger"
+  version: "2.0.0"
+  description: "Advanced Discord logging and monitoring bot"
+  prefix: "!"
+  status:
+    type: "watching"
+    text: "server activity"
+
+cache:
+  messages:
+    limit: 200
+    ttl_hours: 24
+  users:
+    limit: 1000
+    ttl_hours: 1
+  configs:
+    ttl_minutes: 5
+
+storage:
+  provider: "local"
+  local:
+    path: "./stored_files"
+    max_size_gb: 50
+  files:
+    max_size_mb: 25
+    timeout_ms: 30000
+    concurrent_downloads: 10
+    retry_attempts: 3
+    retry_delay_ms: 1000
+  url_file_extensions:
+    - .jpg
+    - .jpeg
+    - .png
+    - .gif
+    - .webp
+    - .mp4
+    - .mp3
+    - .wav
+    - .pdf
+    - .zip
+    - .rar
+    - .7z
+    - .txt
+    - .doc
+    - .docx
+    - .xls
+    - .xlsx
+  retention:
+    files_days: 90
+    deleted_messages_days: 90
+    voice_logs_days: 30
+    audit_logs_days: 365
+  cleanup:
+    enabled: true
+    schedule: "0 2 * * *"
+    dry_run: false
+
+logging:
+  console:
+    enabled: true
+    level: "info"
+    colorize: true
+  file:
+    enabled: true
+    path: "./logs"
+    level: "info"
+    rotation: "daily"
+    max_files: 30
+    max_size_mb: 10
+  error_file:
+    enabled: true
+    path: "./logs/error.log"
+  format:
+    timestamp: true
+    json: false
+
+performance:
+  worker_threads: 4
+  database:
+    pool_min: 2
+    pool_max: 10
+    idle_timeout_ms: 30000
+    connection_timeout_ms: 2000
+  redis:
+    max_retries: 3
+    retry_delay_ms: 1000
+  rate_limiting:
+    enabled: true
+    window_ms: 60000
+    max_requests: 100
+  batch:
+    enabled: true
+    size: 100
+    interval_ms: 5000
+
+web:
+  enabled: false
+  port: 3000
+  host: "0.0.0.0"
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:3000"
+  session:
+    cookie_name: "discord_bot_session"
+    max_age_ms: 86400000
+    secure: false
+  api:
+    prefix: "/api"
+    version: "v1"
+    rate_limit_per_minute: 60
+  static:
+    enabled: true
+    path: "./web-ui/build"
+
+features:
+  message_logging:
+    enabled: true
+    log_deletes: true
+    log_edits: true
+    log_bulk_deletes: true
+    preserve_attachments: true
+    extract_urls: true
+  voice_logging:
+    enabled: true
+    log_joins: true
+    log_leaves: true
+    log_switches: true
+    log_mutes: false
+    log_deafens: false
+  moderation_logging:
+    enabled: false
+    log_bans: true
+    log_kicks: true
+    log_timeouts: true
+    log_role_changes: true
+  member_logging:
+    enabled: false
+    log_joins: true
+    log_leaves: true
+    log_nickname_changes: true
+  reaction_logging:
+    enabled: false
+    log_adds: true
+    log_removes: true
+
+monitoring:
+  health_check:
+    enabled: true
+    endpoint: "/health"
+    interval_ms: 30000
+  prometheus:
+    enabled: false
+    port: 9090
+    endpoint: "/metrics"
+  sentry:
+    enabled: false
+    environment: "production"
+    sample_rate: 1.0
+  alerts:
+    enabled: false
+    channels: []
+    thresholds:
+      memory_percent: 90
+      cpu_percent: 90
+      error_rate_per_minute: 10
+
+security:
+  auth:
+    jwt_expires_in: "7d"
+    refresh_token_expires_in: "30d"
+    bcrypt_rounds: 10
+  rate_limiting:
+    api:
+      window_ms: 60000
+      max_requests: 60
+    auth:
+      window_ms: 900000
+      max_requests: 5
+  ip_whitelist:
+    enabled: false
+    ips: []
+  file_scanning:
+    enabled: false
+    quarantine_path: "./quarantine"
+  encryption:
+    enabled: false
+    algorithm: "aes-256-gcm"

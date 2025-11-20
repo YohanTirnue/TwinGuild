@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: twinguild-discord-bot
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./config:/app/config:ro
+      - ./stored_files:/app/stored_files
+      - ./logs:/app/logs
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  bot-network:
+    driver: bridge
+
+# Optional: Add PostgreSQL and Redis for future features
+# Uncomment the sections below when you want to add database support
+
+#  postgres:
+#    image: postgres:15-alpine
+#    container_name: twinguild-db
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: discord_bot
+#      POSTGRES_USER: discord_bot
+#      POSTGRES_PASSWORD: ${DB_PASSWORD}
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    networks:
+#      - bot-network
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U discord_bot"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+
+#  redis:
+#    image: redis:7-alpine
+#    container_name: twinguild-redis
+#    restart: unless-stopped
+#    command: redis-server --appendonly yes
+#    volumes:
+#      - redis_data:/data
+#    networks:
+#      - bot-network
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 5
+
+#volumes:
+#  postgres_data:
+#  redis_data:
